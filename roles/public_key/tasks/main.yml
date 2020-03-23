@@ -1,0 +1,7 @@
+- name: Copy public key
+  copy: src=~/.ssh/id_rsa_devops_course.pub dest=~vagrant/.ssh/me.pub
+- shell: cat ~vagrant/.ssh/me.pub
+  register: public_key
+- lineinfile:
+    path: ~vagrant/.ssh/authorized_keys
+    line: "{{public_key.stdout}}"

@@ -1,0 +1,16 @@
+- name: Install Java8
+  apt: name=openjdk-8-jdk state=latest
+- name: Update PATH with Java/bin
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    backrefs: yes
+    regexp: "^PATH=\"((?:(?!\\$JAVA_HOME/bin).)*)\"$"
+    line: 'PATH="$JAVA_HOME/bin:\1"'
+- name: Populate /etc/environment
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    regexp: "^{{item.key}}="
+    line: "{{item.key}}={{item.value}}"
+  with_items: "{{environment_vars}}"

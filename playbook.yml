@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: true
+  vars:
+    vHome: /home/vagrant
+  vars_files:
+  - vars.yml
+
+  roles:
+  - role: apt_update
+  - role: public_key
+  - role: jdk
+  - role: gitlab
+  # - role: docker
+
+  tasks:
