@@ -1,10 +1,22 @@
 ---
 - hosts: all
   become: true
+  gather_facts: no
   vars:
-    vHome: /home/vagrant
+    ansible_python_interpreter: /usr/bin/python3
+
   vars_files:
   - vars.yml
+
+  pre_tasks:
+    - name: Populate /etc/environment
+      lineinfile:
+        dest: /etc/environment
+        state: present
+        regexp: "^{{item.key}}="
+        line: "{{item.key}}={{item.value}}"
+      with_items: "{{environment_vars}}"
+
 
   roles:
   - role: apt_update

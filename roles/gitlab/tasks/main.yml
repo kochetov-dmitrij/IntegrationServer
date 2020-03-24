@@ -1,50 +1,85 @@
 ---
 
 - name: "Create Downloads folder"
-  file: path="{{ destination }}" state=directory
+  file: path="{{downloads}}" state=directory
+
+- name: "Check if GitLab configuration file already exists."
+  stat: path=/etc/gitlab/gitlab.rb
+  register: gitlab_config_file
+
+- name: "Check if GitLab is already installed."
+  stat: path=/usr/bin/gitlab-ctl
+  register: gitlab_file
+
+- name: "Install GitLab dependencies."
+  package: name={{item}} state=present
+  with_items:
+    - openssh-server
+    - ca-certificates
+    - curl
+    - openssl
+    - tzdata
+
+- block:
+  - name: "Download GitLab repository installation script."
+    get_url:
+      url: "{{gitlab_repository_installation_script_url}}"
+      dest: /tmp/gitlab_install_repository.sh
+      validate_certs: true
+  - name: "Install GitLab repository."
+    command: bash /tmp/gitlab_install_repository.sh
+  - name: "Install GitLab"
+    package: name="{{gitlab_edition}}" state=present
+  when: not gitlab_file.stat.exists
+
+- block:
+  - name: Set gitlab external url
+    lineinfile:
+      path: /etc/gitlab/gitlab.rb
+      regexp: '^external_url '
+      line: external_url '{{gitlab_url}}'
+    register: gitlab_url_changed
+  - name: Set gitlab port
+    lineinfile:
+      path: /etc/gitlab/gitlab.rb
+      regexp: "unicorn\\['port'\\] = "
+      line: unicorn['port'] = {{gitlab_port}}
+    register: gitlab_port_changed
+  - name: Set gitlab root password
+    lineinfile:
+      path: /etc/gitlab/gitlab.rb
+      regexp: "gitlab_rails\\['initial_root_password'\\] = "
+      line: gitlab_rails['initial_root_password'] = "Cg*KxM7NW*"
+  - name: Set gitlab default token
+    lineinfile:
+      path: /etc/gitlab/gitlab.rb
+      regexp: "gitlab_rails\\['initial_shared_runners_registration_token'\\] = "
+      line: gitlab_rails['initial_shared_runners_registration_token'] = "A3cHPBGbedNW96dgyvvK"
+
+- name: Reconfigure Github
+  shell: |
+    gitlab-ctl reconfigure
+    gitlab-ctl restart unicorn
+    gitlab-ctl restart
+  when: gitlab_url_changed.changed or gitlab_port_changed.changed
 
 
-# - name: "Check if GitLab configuration file already exists."
-#   stat: path=/etc/gitlab/gitlab.rb
-#   register: gitlab_config_file
-#
-#
-# - name: "Check if GitLab is already installed."
-#   stat: path=/usr/bin/gitlab-ctl
-#   register: gitlab_file
-#
-#
-# - name: "Install GitLab dependencies."
-#   package: name={{ item }} state=present
-#   with_items:
-#     - openssh-server
-#     - ca-certificates
-#     - curl
-#     - openssl
-#     - tzdata
-#
-#
-# - name: "Download GitLab repository installation script."
-#   get_url:
-#     url: "{{ gitlab_repository_installation_script_url }}"
-#     dest: /tmp/gitlab_install_repository.sh
-#     validate_certs: "{{ gitlab_download_validate_certs }}"
-#   when: not gitlab_file.stat.exists
-#
-#
-# - name: "Install GitLab repository."
-#   command: bash /tmp/gitlab_install_repository.sh
-#   when: not gitlab_file.stat.exists
-#
-#
-# - name: "Define the Gitlab package name."
-#   set_fact:
-#     gitlab_package_name: "{{ gitlab_edition }}{{ gitlab_package_version_separator }}{{ gitlab_version }}"
-#   when: gitlab_version != ''
-#
-#
-# - name: "Install GitLab"
-#   package:
-#     name: "{{ gitlab_package_name | default(gitlab_edition) }}"
-#     state: present
-#   when: not gitlab_file.stat.exists
+# - name: "Install pyapi-gitlab for adding new users"
+#   pip: name=gitlab state=present
+# - name: "Install pyapi-gitlab for adding new users"
+#   pip: name=pyapi-gitlab state=present
+
+- name: Create Gitlab User
+  # become: false
+  become: true
+  gitlab_user:
+    server_url: "{{gitlab_url}}"
+    validate_certs: True
+    name: "{{gitlab_default_user_name}}"
+    login_user: "root"
+    login_password: "Cg*KxM7NW*"
+    username: "{{gitlab_default_user_login}}"
+    password: "{{gitlab_default_user_pass}}"
+    email: "{{gitlab_default_user_email}}"
+    state: present
+  delegate_to: localhost
