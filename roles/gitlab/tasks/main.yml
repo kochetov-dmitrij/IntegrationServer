@@ -19,6 +19,7 @@
     - curl
     - openssl
     - tzdata
+    - jq
 
 - block:
   - name: "Download GitLab repository installation script."
@@ -56,7 +57,7 @@
       regexp: "gitlab_rails\\['initial_shared_runners_registration_token'\\] = "
       line: gitlab_rails['initial_shared_runners_registration_token'] = "A3cHPBGbedNW96dgyvvK"
 
-- name: Reconfigure Github
+- name: Reconfigure Gitlab
   shell: |
     gitlab-ctl reconfigure
     gitlab-ctl restart unicorn
@@ -64,22 +65,66 @@
   when: gitlab_url_changed.changed or gitlab_port_changed.changed
 
 
+- name: Get Gitlab OAuth2 token of root user
+  shell: curl --data "grant_type=password&username=root&password=Cg*KxM7NW*" --request POST {{gitlab_url}}/oauth/token | jq -r '.access_token'
+  until: gitlab_token_root.stdout != ''
+  retries: 12
+  delay: 5
+  args:
+    warn: no
+  register: gitlab_token_root
+
+- name: Create a new GitLab user
+  uri:
+    method: POST
+    url: "{{gitlab_url}}/api/v4/users"
+    body_format: form-urlencoded
+    status_code: [201,409]
+    body:
+      access_token: "{{gitlab_token_root.stdout}}"
+      email: "{{gitlab_default_user_email}}"
+      name: "{{gitlab_default_user_name}}"
+      username: "{{gitlab_default_user_login}}"
+      password: "{{gitlab_default_user_pass}}"
+      skip_confirmation: true
+
+- name: Get Gitlab OAuth2 token of the new user
+  shell: curl --data "grant_type=password&username={{gitlab_default_user_login}}&password={{gitlab_default_user_pass}}" --request POST {{gitlab_url}}/oauth/token | jq -r '.access_token'
+  register: gitlab_token_user
+
+- name: Create a new repository
+  uri:
+    method: POST
+    url: "{{gitlab_url}}/api/v4/projects"
+    body_format: form-urlencoded
+    status_code: [201,400]
+    body:
+      access_token: "{{gitlab_token_user.stdout}}"
+      name: "{{gitlab_default_user_name}}"
+      visibility: 'public'
+      import_url: "{{pull_from}}"
+
+# api/v4/user
+# curl --header "PRIVATE-TOKEN: 0cadb9bf73ddff043826faf0d13772bfb319888c9744e7a49ab0ebc9d06be075" http://192.168.11.10/gitlab/api/v4/user
+
 # - name: "Install pyapi-gitlab for adding new users"
-#   pip: name=gitlab state=present
+#   apt: name='python-setuptools' state=present
+# - name: "Install pyapi-gitlab for adding new users"
+#   pip: name='setuptools' state=present
+# - name: "Install pyapi-gitlab for adding new users"
+#   pip: name='python-gitlab==1.12.1' state=present
 # - name: "Install pyapi-gitlab for adding new users"
 #   pip: name=pyapi-gitlab state=present
 
-- name: Create Gitlab User
-  # become: false
-  become: true
-  gitlab_user:
-    server_url: "{{gitlab_url}}"
-    validate_certs: True
-    name: "{{gitlab_default_user_name}}"
-    login_user: "root"
-    login_password: "Cg*KxM7NW*"
-    username: "{{gitlab_default_user_login}}"
-    password: "{{gitlab_default_user_pass}}"
-    email: "{{gitlab_default_user_email}}"
-    state: present
-  delegate_to: localhost
+# - name: Create Gitlab User
+#   # become: false
+#   gitlab_user:
+#     access_level: maintainer
+#     api_url: "http://localhost/gitlab"
+#     name: "{{gitlab_default_user_name}}"
+#     api_username: "root"
+#     # api_token: 'A3cHPBGbedNW96dgyvvK'
+#     api_password: "Cg*KxM7NW*"
+#     username: "{{gitlab_default_user_login}}"
+#     password: "{{gitlab_default_user_pass}}"
+#     email: "{{gitlab_default_user_email}}"

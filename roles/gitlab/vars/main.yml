@@ -8,3 +8,6 @@ gitlab_default_user_name: 'devopser'
 gitlab_default_user_login: 'devopser'
 gitlab_default_user_pass: 'f!qskL4Zd@'
 gitlab_default_user_email: 'me@example.com'
+
+repository_name: 'DevopsCalculator'
+pull_from: 'https://github.com/kochetov-dmitrij/DevopsCalculator'

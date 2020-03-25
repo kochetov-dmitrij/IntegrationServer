@@ -13,23 +13,14 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./data", "/vagrant_data", create: true
 
   config.vm.provider "virtualbox" do |vb|
-    vb.memory = "10240"
+    vb.memory = "12000"
     vb.cpus = 6
   end
-
-  # ENV['LC_ALL']="en_US.UTF-8"
 
   config.vm.provision "ansible" do |ansible|
      ansible.compatibility_mode = "2.0"
      ansible.playbook = "playbook.yml"
+     # ansible.verbose = "vvvv"
   end
-
-
-  # config.vm.provision "shell", inline: <<-SHELL
-  #    	sudo apt-get update
-  #    	sudo apt-get install --yes python
-  #    	# apt-get install -y default-jre
-  # 	  # apt-get install -y apache2
-  #  	SHELL
 
 end
