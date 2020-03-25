@@ -100,7 +100,7 @@
     status_code: [201,400]
     body:
       access_token: "{{gitlab_token_user.stdout}}"
-      name: "{{gitlab_default_user_name}}"
+      name: "{{repository_name}}"
       visibility: 'public'
       import_url: "{{pull_from}}"
 
