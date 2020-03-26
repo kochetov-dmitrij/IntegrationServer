@@ -1,0 +1,48 @@
+- name: Add an Apt signing key
+  apt_key:
+    url: https://pkg.jenkins.io/debian/jenkins-ci.org.key
+    state: present
+- name: Add an Apt repository
+  apt_repository:
+    repo: deb http://pkg.jenkins.io/debian-stable binary/
+    state: present
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: latest
+    update_cache: True
+- name: Set port 8081
+  lineinfile:
+    path: /etc/default/jenkins
+    regexp: 'HTTP_PORT=8080'
+    line: 'HTTP_PORT=8081'
+- name: Disable Wizard
+  lineinfile:
+    path: /etc/default/jenkins
+    regexp: '^JENKINS_ARGS='
+    line: 'JENKINS_ARGS="--webroot=/var/cache/$NAME/war --httpPort=$HTTP_PORT -Djenkins.install.runSetupWizard=false"'
+- name: Upload Jenkins init script
+  template:
+    src: init.groovy
+    dest: /var/lib/jenkins/init.groovy.d/
+    mode: 0744
+- name: Restart Jenkins service
+  service:
+    name: jenkins
+    state: restarted
+    enabled: yes
+- name: Wait for restart
+  include_tasks: ready_wait.yml
+
+- name: Get Jenkins token of the admin
+  shell: |
+     CRUMB=$(curl -sS --cookie-jar ./cookie 'http://{{ jenkins_admin_user }}:{{ jenkins_admin_pass }}@{{ jenkins_url_base }}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)')
+     curl -sS --cookie ./cookie -H $CRUMB '{{ jenkins_url }}/me/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken' -X POST --data 'newTokenName=foo' --user {{ jenkins_admin_user }}:{{ jenkins_admin_pass }} | jq '.data.tokenValue' | sed 's/"//g'
+  args:
+    warn: no
+  register: jenkins_admin_token
+- set_fact:
+    jenkins_url_with_token: "http://{{ jenkins_admin_user }}:{{ jenkins_admin_token.stdout }}@{{ jenkins_url_base }}"
+
+- name: Install/update plugins
+  include_tasks: plugins.yml

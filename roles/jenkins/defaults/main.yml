@@ -1,0 +1,21 @@
+jenkins_url_base: "192.168.11.10:8081"
+jenkins_url: "http://{{jenkins_url_base}}"
+
+jenkins_admin_user: devopser
+jenkins_admin_pass: cLVc1VH73D
+
+jenkins_base_plugins:
+  - active-directory
+  - cloudbees-bitbucket-branch-source
+  - credentials-binding
+  - embeddable-build-status
+  - git
+  - github-branch-source
+  - greenballs
+  - lockable-resources
+  - matrix-auth
+  - monitoring
+  - parameterized-trigger
+  - ssh-slaves
+  - workflow-aggregator
+  - blueocean

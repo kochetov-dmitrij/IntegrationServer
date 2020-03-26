@@ -1,5 +1,3 @@
----
-
 - name: "Create Downloads folder"
   file: path="{{downloads}}" state=directory
 
@@ -103,28 +101,3 @@
       name: "{{repository_name}}"
       visibility: 'public'
       import_url: "{{pull_from}}"
-
-# api/v4/user
-# curl --header "PRIVATE-TOKEN: 0cadb9bf73ddff043826faf0d13772bfb319888c9744e7a49ab0ebc9d06be075" http://192.168.11.10/gitlab/api/v4/user
-
-# - name: "Install pyapi-gitlab for adding new users"
-#   apt: name='python-setuptools' state=present
-# - name: "Install pyapi-gitlab for adding new users"
-#   pip: name='setuptools' state=present
-# - name: "Install pyapi-gitlab for adding new users"
-#   pip: name='python-gitlab==1.12.1' state=present
-# - name: "Install pyapi-gitlab for adding new users"
-#   pip: name=pyapi-gitlab state=present
-
-# - name: Create Gitlab User
-#   # become: false
-#   gitlab_user:
-#     access_level: maintainer
-#     api_url: "http://localhost/gitlab"
-#     name: "{{gitlab_default_user_name}}"
-#     api_username: "root"
-#     # api_token: 'A3cHPBGbedNW96dgyvvK'
-#     api_password: "Cg*KxM7NW*"
-#     username: "{{gitlab_default_user_login}}"
-#     password: "{{gitlab_default_user_pass}}"
-#     email: "{{gitlab_default_user_email}}"

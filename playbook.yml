@@ -9,8 +9,6 @@
   - vars.yml
 
   pre_tasks:
-    # - name: 'Install python2 (ansible requires)'
-    #   raw: sudo apt-get -y install python
     - name: Populate /etc/environment
       lineinfile:
         dest: /etc/environment
@@ -24,6 +22,6 @@
   - role: public_key
   - role: jdk
   - role: gitlab
-  # - role: docker
+  - role: jenkins
 
   tasks:

@@ -1,4 +1,7 @@
 - name: Update apt cache
   apt:
+    name: "{{ item }}"
     state: latest
     update_cache: True
+  with_items:
+    - jq
