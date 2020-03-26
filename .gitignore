@@ -3,6 +3,7 @@
 data/
 *.log
 *.retry
+cookie
 
 # OS generated files #
 ######################
