@@ -39,10 +39,24 @@
      CRUMB=$(curl -sS --cookie-jar ./cookie 'http://{{ jenkins_admin_user }}:{{ jenkins_admin_pass }}@{{ jenkins_url_base }}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)')
      curl -sS --cookie ./cookie -H $CRUMB '{{ jenkins_url }}/me/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken' -X POST --data 'newTokenName=foo' --user {{ jenkins_admin_user }}:{{ jenkins_admin_pass }} | jq '.data.tokenValue' | sed 's/"//g'
   args:
-    warn: no
+    warn: false
   register: jenkins_admin_token
 - set_fact:
     jenkins_url_with_token: "http://{{ jenkins_admin_user }}:{{ jenkins_admin_token.stdout }}@{{ jenkins_url_base }}"
+- debug:
+    var: jenkins_url_with_token
 
 - name: Install/update plugins
   include_tasks: plugins.yml
+
+- name: Add jenkins hook to gitlab
+  uri:
+    method: POST
+    url: "{{gitlab_url}}/api/v4/projects/1/hooks"
+    body_format: form-urlencoded
+    status_code: [201,409]
+    body:
+      access_token: "{{gitlab_token_root.stdout}}"
+      url: "http://{{jenkins_admin_user}}:{{jenkins_admin_token.stdout}}@{{jenkins_url_base}}/project/DevopsCalculator"
+      push_events: true
+      merge_requests_events: true

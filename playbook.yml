@@ -19,6 +19,7 @@
 
   roles:
   - role: apt_update
+  - role: python3
   - role: public_key
   - role: jdk
   - role: gitlab

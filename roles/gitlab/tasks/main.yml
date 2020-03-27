@@ -69,8 +69,10 @@
   retries: 12
   delay: 5
   args:
-    warn: no
+    warn: false
   register: gitlab_token_root
+- debug:
+    var: gitlab_token_root.stdout
 
 - name: Create a new GitLab user
   uri:
@@ -88,7 +90,11 @@
 
 - name: Get Gitlab OAuth2 token of the new user
   shell: curl --data "grant_type=password&username={{gitlab_default_user_login}}&password={{gitlab_default_user_pass}}" --request POST {{gitlab_url}}/oauth/token | jq -r '.access_token'
+  args:
+    warn: false
   register: gitlab_token_user
+- debug:
+    var: gitlab_token_user.stdout
 
 - name: Create a new repository
   uri:
@@ -101,3 +107,7 @@
       name: "{{repository_name}}"
       visibility: 'public'
       import_url: "{{pull_from}}"
+
+- name: Allow localhost hooks for jenkins (selenium script)
+  script: allow_localhost_hooks.py "{{gitlab_url}}" root "{{gitlab_default_root_pass}}"
+  register: out

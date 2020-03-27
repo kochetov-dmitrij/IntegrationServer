@@ -6,8 +6,10 @@ gitlab_edition: "gitlab-ce"
 gitlab_repository_installation_script_url: "https://packages.gitlab.com/install/repositories/gitlab/{{ gitlab_edition }}/script.deb.sh"
 gitlab_default_user_name: 'devopser'
 gitlab_default_user_login: 'devopser'
-gitlab_default_user_pass: 'f!qskL4Zd@'
+gitlab_default_user_pass: 'f2qskL4Zd6'
 gitlab_default_user_email: 'me@example.com'
+
+gitlab_default_root_pass: 'Cg*KxM7NW*' # user: root
 
 repository_name: 'DevopsCalculator'
 pull_from: 'https://github.com/kochetov-dmitrij/DevopsCalculator'
