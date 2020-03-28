@@ -54,6 +54,11 @@
       path: /etc/gitlab/gitlab.rb
       regexp: "gitlab_rails\\['initial_shared_runners_registration_token'\\] = "
       line: gitlab_rails['initial_shared_runners_registration_token'] = "A3cHPBGbedNW96dgyvvK"
+  - name: Disable Gitlab CI/CD
+    lineinfile:
+      path: /etc/gitlab/gitlab.rb
+      regexp: "gitlab_default_projects_features_builds"
+      line: gitlab_rails['gitlab_default_projects_features_builds'] = false
 
 - name: Reconfigure Gitlab
   shell: |

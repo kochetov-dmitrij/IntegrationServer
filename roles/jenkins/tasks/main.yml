@@ -55,9 +55,6 @@
     warn: false
   register: gitlab_hook_status
 
-# - debug:
-#     var: gitlab_hook_status
-
 - name: Add jenkins hook to gitlab
   uri:
     method: POST
@@ -91,3 +88,16 @@
   when:
     - gitlab_credential_status.status == 404
     - gitlab_token_api.stdout != ''
+
+- name: Add Gitlab connection (selenium script)
+  script: add_gitlab_connection.py "{{jenkins_url}}" "{{jenkins_admin_user}}" "{{jenkins_admin_pass}}" "{{gitlab_url}}"
+
+- name: Create Jenkins job
+  uri:
+    force_basic_auth: yes
+    url: "{{ jenkins_url_with_token }}/createItem?name=DevopsCalculator"
+    method: POST
+    body: "{{ lookup('template', 'job_config.xml') }}"
+    status_code: [200, 400]
+    headers:
+      content-type: application/xml

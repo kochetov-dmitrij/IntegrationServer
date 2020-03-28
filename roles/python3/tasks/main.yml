@@ -12,7 +12,7 @@
   apt: name=firefox,xvfb state=present
 
 - name: "Check if Geckon is already installed."
-  stat: path=/usr/local/bin/geckodriver
+  stat: path=/usr/bin/geckodriver
   register: geckon_file
 
 - name: Downloading geckon driver
