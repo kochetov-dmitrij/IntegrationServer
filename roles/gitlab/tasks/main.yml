@@ -110,4 +110,8 @@
 
 - name: Allow localhost hooks for jenkins (selenium script)
   script: allow_localhost_hooks.py "{{gitlab_url}}" root "{{gitlab_default_root_pass}}"
-  register: out
+- name: Create PersonalAccessToken with API scope (selenium script)
+  script: create_api_token.py "{{gitlab_url}}" "{{gitlab_default_user_login}}" "{{gitlab_default_user_pass}}"
+  register: gitlab_token_api
+- debug:
+    var: gitlab_token_api.stdout

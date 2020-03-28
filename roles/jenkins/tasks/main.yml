@@ -49,6 +49,15 @@
 - name: Install/update plugins
   include_tasks: plugins.yml
 
+- name: Check if GitLab has jenkins hook
+  shell: "curl {{gitlab_url}}/api/v4/projects/1/hooks?access_token={{gitlab_token_user.stdout}} | jq '.[].url'"
+  args:
+    warn: false
+  register: gitlab_hook_status
+
+# - debug:
+#     var: gitlab_hook_status
+
 - name: Add jenkins hook to gitlab
   uri:
     method: POST
@@ -60,3 +69,25 @@
       url: "http://{{jenkins_admin_user}}:{{jenkins_admin_token.stdout}}@{{jenkins_url_base}}/project/DevopsCalculator"
       push_events: true
       merge_requests_events: true
+  when: "not 'DevopsCalculator' in gitlab_hook_status.stdout"
+
+- name: Check if Jenkins has GitLab credentials
+  uri:
+    force_basic_auth: yes
+    url: "{{ jenkins_url_with_token }}/credentials/store/system/domain/_/credential/gitlab"
+    method: GET
+    status_code: [200, 404]
+  register: gitlab_credential_status
+
+- name: Add GitLab credentials to Jenkins
+  uri:
+    force_basic_auth: yes
+    url: "{{ jenkins_url_with_token }}/credentials/store/system/domain/_/createCredentials"
+    method: POST
+    body: "{{ lookup('template', 'credential.xml') }}"
+    status_code: [200]
+    headers:
+      content-type: application/xml
+  when:
+    - gitlab_credential_status.status == 404
+    - gitlab_token_api.stdout != ''
