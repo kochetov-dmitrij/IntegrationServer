@@ -12,3 +12,4 @@ vagrant up
 - User name / pass: devopser / f!qskL4Zd@  (can be modified in roles/gitlab/vars/main.yml)
 
 ### Jenkins:
+random commit2
