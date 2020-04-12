@@ -39,6 +39,9 @@
               <includes>ready/* master</includes>
               <excludes></excludes>
             </jenkins.scm.impl.trait.WildcardSCMHeadFilterTrait>
+            <jenkins.plugins.git.traits.PruneStaleBranchTrait>
+              <extension class="hudson.plugins.git.extensions.impl.PruneStaleBranch"/>
+            </jenkins.plugins.git.traits.PruneStaleBranchTrait>
           </traits>
         </source>
         <strategy class="jenkins.branch.DefaultBranchPropertyStrategy">

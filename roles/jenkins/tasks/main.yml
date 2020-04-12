@@ -16,6 +16,11 @@
     path: /etc/default/jenkins
     regexp: 'HTTP_PORT=8080'
     line: 'HTTP_PORT=8081'
+- name: Disable script security (allow using static methods)
+  lineinfile:
+    path: /etc/default/jenkins
+    regexp: '^JAVA_ARGS='
+    line: 'JAVA_ARGS="-Djava.awt.headless=true -Dpermissive-script-security.enabled=true"'
 - name: Disable Wizard
   lineinfile:
     path: /etc/default/jenkins

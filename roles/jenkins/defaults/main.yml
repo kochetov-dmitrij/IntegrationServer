@@ -8,5 +8,6 @@ jenkins_base_plugins:
   - git
   - gitlab-plugin
   - monitoring
+  - permissive-script-security
   # - ssh-slaves
   - blueocean
