@@ -31,7 +31,7 @@
       <jenkins.branch.BranchSource>
         <source class="jenkins.plugins.git.GitSCMSource" plugin="git@4.2.2">
           <id>cf705291-20a0-4653-a17d-d066053491ba</id>
-          <remote>http://192.168.11.10/gitlab/devopser/devopscalculator</remote>
+          <remote>http://192.168.11.10/gitlab/devopser/devopscalculator.git</remote>
           <credentialsId></credentialsId>
           <traits>
             <jenkins.plugins.git.traits.BranchDiscoveryTrait/>
@@ -39,6 +39,11 @@
               <includes>ready/* master</includes>
               <excludes></excludes>
             </jenkins.scm.impl.trait.WildcardSCMHeadFilterTrait>
+            <jenkins.plugins.git.traits.GitBrowserSCMSourceTrait>
+              <browser class="hudson.plugins.git.browser.GitLab">
+                <url>http://192.168.11.10/gitlab/devopser/devopscalculator/</url>
+              </browser>
+            </jenkins.plugins.git.traits.GitBrowserSCMSourceTrait>
             <jenkins.plugins.git.traits.PruneStaleBranchTrait>
               <extension class="hudson.plugins.git.extensions.impl.PruneStaleBranch"/>
             </jenkins.plugins.git.traits.PruneStaleBranchTrait>

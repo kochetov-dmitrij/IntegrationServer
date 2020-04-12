@@ -1,5 +1,5 @@
 - name: Update apt cache
   apt:
-    name: ['jq']
+    name: ['jq', 'ansible', 'docker.io']
     state: latest
     update_cache: True

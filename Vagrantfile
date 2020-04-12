@@ -3,7 +3,7 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "ubuntu/bionic64"
   config.vm.hostname = "integration-server"
 
   config.vm.network "private_network", ip: "192.168.11.10"
@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./data", "/vagrant_data", create: true
 
   config.vm.provider "virtualbox" do |vb|
-    vb.memory = "12000"
+    vb.memory = "14000"
     vb.cpus = 6
   end
 
