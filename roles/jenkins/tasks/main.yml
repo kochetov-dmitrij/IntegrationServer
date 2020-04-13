@@ -31,6 +31,8 @@
     src: init.groovy
     dest: /var/lib/jenkins/init.groovy.d/
     mode: 0744
+- name: Add jenkins to docker group
+  shell: sudo usermod -aG docker jenkins
 - name: Restart Jenkins service
   service:
     name: jenkins

@@ -1,5 +1,15 @@
 - name: Update apt cache
   apt:
-    name: ['jq', 'ansible', 'docker.io']
+    name: ['jq', 'software-properties-common', 'docker.io']
     state: latest
     update_cache: True
+
+- name: Add ansible repo
+  apt_repository:
+    repo: ppa:ansible/ansible
+    state: present
+
+- name: Install ansible
+  apt:
+    name: ['ansible']
+    state: latest

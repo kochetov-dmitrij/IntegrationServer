@@ -1,7 +1,10 @@
-- name: Copy public key
+- name: Copy public key to integration server
   copy: src=~/.ssh/id_rsa.pub dest=~vagrant/.ssh/me.pub
 - shell: cat ~vagrant/.ssh/me.pub
   register: public_key
 - lineinfile:
     path: ~vagrant/.ssh/authorized_keys
     line: "{{public_key.stdout}}"
+
+- name: Generate new keys (for docker)
+  shell: if [ ! -f "/var/lib/jenkins/.ssh/id_rsa" ]; then ssh-keygen -C '' -t rsa -N '' -f /var/lib/jenkins/.ssh/id_rsa ; fi
