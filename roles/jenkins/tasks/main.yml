@@ -31,8 +31,10 @@
     src: init.groovy
     dest: /var/lib/jenkins/init.groovy.d/
     mode: 0744
-- name: Add jenkins to docker group
-  shell: sudo usermod -aG docker jenkins
+- name: Add jenkins and vagrant users to docker group
+  shell: |
+    sudo usermod -aG docker jenkins
+    sudo usermod -aG docker vagrant
 - name: Restart Jenkins service
   service:
     name: jenkins
@@ -98,6 +100,9 @@
 
 - name: Add Gitlab connection (selenium script)
   script: add_gitlab_connection.py "{{jenkins_url}}" "{{jenkins_admin_user}}" "{{jenkins_admin_pass}}" "{{gitlab_url}}"
+
+- name: Change number of executors to 7
+  script: change_num_of_executors.py "{{jenkins_url}}" "{{jenkins_admin_user}}" "{{jenkins_admin_pass}}"
 
 - name: Create Jenkins job
   uri:

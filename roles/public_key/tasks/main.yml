@@ -6,5 +6,10 @@
     path: ~vagrant/.ssh/authorized_keys
     line: "{{public_key.stdout}}"
 
-- name: Generate new keys (for docker)
-  shell: if [ ! -f "/var/lib/jenkins/.ssh/id_rsa" ]; then ssh-keygen -C '' -t rsa -N '' -f /var/lib/jenkins/.ssh/id_rsa ; fi
+- name: Create jenkins ssh folder
+  file:
+    path: /ssh
+    state: directory
+    mode: 0777
+- name: Generate new keys (for connecting to docker via Jenkinsfile)
+  shell: if [ ! -f "/ssh/id_rsa" ]; then ssh-keygen -C '' -t rsa -N '' -f /ssh/id_rsa && chmod 644 /ssh/id_rsa ; fi

@@ -23,6 +23,7 @@
   - role: public_key
   - role: jdk
   - role: gitlab
+  - role: artifactory
   - role: jenkins
 
   tasks:
