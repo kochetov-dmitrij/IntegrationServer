@@ -114,7 +114,7 @@
     headers:
       content-type: application/xml
 
-- name: Create one ready/init branch to trigger first build
+- name: Create ready/init branch to trigger first build
   shell: |
     cd /tmp/
     rm -rf devopscalculator/
