@@ -114,11 +114,12 @@
     headers:
       content-type: application/xml
 
-- name: Create ready/init branch to trigger first build
+- name: Create one ready/init branch to trigger first build
+  become: yes
   shell: |
     cd /tmp/
     rm -rf devopscalculator/
-    git clone http://192.168.11.10/gitlab/devopser/devopscalculator.git
+    git clone http://devopser:f2qskL4Zd6@192.168.11.10/gitlab/devopser/devopscalculator.git
     cd devopscalculator/
     if [ -z "`cat README.md | grep kochetov-dmitrij/DevopsCalculator`" ] && [ -z "`git ls-remote --heads http://192.168.11.10/gitlab/devopser/devopscalculator.git ready/init`" ] ; then
       git config --global user.name "devopser"
