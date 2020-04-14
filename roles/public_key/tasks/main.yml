@@ -12,4 +12,4 @@
     state: directory
     mode: 0777
 - name: Generate new keys (for connecting to docker via Jenkinsfile)
-  shell: if [ ! -f "/ssh/id_rsa" ]; then ssh-keygen -C '' -t rsa -N '' -f /ssh/id_rsa && chmod 644 /ssh/id_rsa ; fi
+  shell: if [ ! -f /ssh/id_rsa ]; then ssh-keygen -C '' -t rsa -N '' -f /ssh/id_rsa && chmod 644 /ssh/id_rsa ; fi
