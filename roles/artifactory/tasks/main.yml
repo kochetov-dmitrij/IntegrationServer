@@ -1,4 +1,5 @@
 - name: Add Artifactory
+  become: yes
   shell: |
     export JFROG_HOME=/opt/jfrog
     rm -rf $JFROG_HOME
@@ -6,4 +7,16 @@
     touch $JFROG_HOME/artifactory/var/etc/system.yaml
     chown -R 1030:1030 $JFROG_HOME/artifactory/var
     docker rm -f artifactory &>/dev/null
+    docker rm -f "/artifactory" &>/dev/null
     docker run --name artifactory -v $JFROG_HOME/artifactory/var/:/var/opt/jfrog/artifactory -d -p 8021:8081 -p 8022:8082 docker.bintray.io/jfrog/artifactory-oss:latest
+
+- name: "Waiting for Artifactory to come up"
+  uri:
+    url: "{{artifactory_url}}"
+  register: result
+  until: result.status == 200
+  retries: 100
+  delay: 1
+
+- name: Initialize Artifactory (selenium script)
+  script: init.py "{{artifactory_url}}" "{{artifactory_user_name}}" "{{artifactory_user_pass}}"
