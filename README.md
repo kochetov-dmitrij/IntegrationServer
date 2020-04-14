@@ -28,7 +28,7 @@ vagrant up
 - User name/pass = devopser/f2qskL4Zd6 (can be modified in roles/gitlab/vars/main.yml)
 
 ### Jenkins:
-- URL: http://192.168.11.10:8081/
+- URL: http://localhost:11001/
 - BlueOcean(cool UI): http://192.168.11.10:8081/blue/organizations/jenkins/DevopsCalculator/activity 
 - User name/pass = devopser/cLVc1VH73D (can be modified in roles/jenkins/vars/main.yml)
 
