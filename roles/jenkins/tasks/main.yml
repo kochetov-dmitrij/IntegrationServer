@@ -113,3 +113,19 @@
     status_code: [200, 400]
     headers:
       content-type: application/xml
+
+- name: Create one ready/init branch to trigger first build
+  shell: |
+    cd /tmp/
+    rm -rf devopscalculator/
+    git clone http://devopser:f2qskL4Zd6@192.168.11.10/gitlab/devopser/devopscalculator.git
+    cd devopscalculator/
+    if [ -z "`cat README.md | grep kochetov-dmitrij/DevopsCalculator`" ] && [ -z "`git ls-remote --heads http://192.168.11.10/gitlab/devopser/devopscalculator.git ready/init`" ] ; then
+      git config --global user.name "devopser"
+      git checkout -B ready/init
+      sed -i '3i #### Cloned from [kochetov-dmitrij/DevopsCalculator](https://github.com/kochetov-dmitrij/DevopsCalculator)' README.md
+      git add -A
+      git commit -m "Initial commit to trigger pipeline"
+      git push origin ready/init
+    fi
+
