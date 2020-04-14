@@ -8,6 +8,14 @@
     chown -R 1030:1030 $JFROG_HOME/artifactory/var
     docker rm -f artifactory &>/dev/null
     docker rm -f "/artifactory" &>/dev/null
+
+- pause:
+    seconds: 5
+
+- name: Start Artifactory
+  become: yes
+  shell: |
+    export JFROG_HOME=/opt/jfrog
     docker run --name artifactory -v $JFROG_HOME/artifactory/var/:/var/opt/jfrog/artifactory -d -p 8021:8081 -p 8022:8082 docker.bintray.io/jfrog/artifactory-oss:latest
 
 - name: "Waiting for Artifactory to come up"
