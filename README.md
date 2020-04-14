@@ -34,4 +34,4 @@ vagrant up
 
 ### Artifactory:
 - URL: http://localhost:11003/ui/repos/tree/General/generic-local
-- User name/pass = admin/sHMHY6iZjh (can be modified in roles/jenkins/vars/main.yml)
+- User name/pass = admin/sHMHY6iZjh (can be modified in roles/artifactory/vars/main.yml)
