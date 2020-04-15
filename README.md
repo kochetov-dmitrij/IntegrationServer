@@ -8,16 +8,19 @@
 Installation for ubuntu:
 ```
 wget -c https://download.virtualbox.org/virtualbox/5.2.38/virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
-sudo dpkg -i virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
+apt install ./virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
+apt install gcc make perl
+/sbin/vboxconfig
 
 wget -c https://releases.hashicorp.com/vagrant/2.0.3/vagrant_2.0.3_x86_64.deb
-sudo dpkg -i vagrant_2.0.3_x86_64.deb
+apt install ./vagrant_2.0.3_x86_64.deb
 vagrant plugin install vagrant-disksize
 
-sudo add-apt-repository ppa:ansible/ansible-2.9
-sudo apt-get update
-sudo apt install ansible
+add-apt-repository ppa:ansible/ansible-2.9
+apt-get update
+apt install ansible
 
+git clone https://github.com/kochetov-dmitrij/IntegrationServer
 cd IntegrationServer
 vagrant up
 ```
