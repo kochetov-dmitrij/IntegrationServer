@@ -35,7 +35,8 @@ vagrant up
 
 ### Jenkins:
 - URL: http://localhost:11001/
-- BlueOcean(cool UI): http://192.168.11.10:8081/blue/organizations/jenkins/DevopsCalculator/activity 
+- BlueOcean(cool UI): http://localhost:11001/blue/organizations/jenkins/DevopsCalculator/activity/
+- Prod server: http://localhost:15900/
 - User name/pass = devopser/cLVc1VH73D (can be modified in roles/jenkins/vars/main.yml)
 
 ### Artifactory:
