@@ -7,12 +7,12 @@
 
 Installation for ubuntu 19.04:
 ```
+wget -c https://download.virtualbox.org/virtualbox/5.2.38/virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
+sudo apt install ./virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
+
 wget -c https://releases.hashicorp.com/vagrant/2.0.3/vagrant_2.0.3_x86_64.deb
 sudo apt install ./vagrant_2.0.3_x86_64.deb
 vagrant plugin install vagrant-disksize
-
-wget -c https://download.virtualbox.org/virtualbox/5.2.38/virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
-sudo apt install ./virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
 
 sudo add-apt-repository ppa:ansible/ansible-2.9
 sudo apt-get update
