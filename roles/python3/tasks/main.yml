@@ -17,7 +17,7 @@
 
 - name: Downloading geckon driver
   shell: |
-    chdir /tmp
+    cd /tmp
     wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz
     tar -xvzf geckodriver*
     chmod +x geckodriver
