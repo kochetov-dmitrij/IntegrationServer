@@ -5,7 +5,7 @@
 - vagrant 2.0.3
 - ansible 2.9
 
-Installation for ubuntu 19.04:
+Installation for ubuntu. Highly recommnded to use 18.04. Problems with repos and dependencies on 19.04 and 19.10
 ```
 wget -c https://download.virtualbox.org/virtualbox/5.2.38/virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
 sudo apt install ./virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
