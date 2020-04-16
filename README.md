@@ -13,8 +13,6 @@ vagrant plugin install vagrant-disksize
 
 wget -c https://download.virtualbox.org/virtualbox/5.2.38/virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
 sudo apt install ./virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
-sudo apt install gcc make perl
-sudo /sbin/vboxconfig
 
 sudo add-apt-repository ppa:ansible/ansible-2.9
 sudo apt-get update
