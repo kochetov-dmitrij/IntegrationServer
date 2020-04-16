@@ -7,7 +7,10 @@
 
 Installation for ubuntu. Highly recommnded to use 18.04. Problems with repos and dependencies on 19.04 and 19.10
 ```
-ssh-keygen  # if ~/.ssh/id_rsa doens't exist 
+ssh-keygen  # if ~/.ssh/id_rsa doens't exist
+
+sudo apt install python-pip
+pip install jmespath
 
 wget -c https://download.virtualbox.org/virtualbox/5.2.38/virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
 sudo apt install ./virtualbox-5.2_5.2.38-136252~Ubuntu~bionic_amd64.deb
