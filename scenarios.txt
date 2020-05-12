@@ -1,1 +1,62 @@
-https://drive.google.com/file/d/1NkCZWgm9BUHQJ16CRFxeBIlzzacXL9tW/view?usp=sharing
+Use case 1.
+Pre-conditions:
+ - Fully completed installation from readme.txt. GitLab project must have only 'master' branch left
+Goal:
+ - Create 2 branches: 'ready/a', 'ready/b'. Add changes to 'ready/b'.
+ - See build/test reports, manually test the app deployed on stage server, accept it to automatically merge it into master.
+ - The version pushed into master will be released on production server.
+Steps:
+ - Using GitLab create 2 new branches: 'ready/a', 'ready/b'. (According to the architecture any 'ready/*' branch is fetched by Jenkins for testing on Integration Server)
+   <check> Both branches appear in Jenkins(use BlueOcean UI) and fail on 'Cancel old builds' stage with 'The branch matches master' error.
+ - Using GitLab change something unimportant (e.g. Readme.md) in 'ready/b' branch and commit.
+   <check> In Jenkins 'ready/b' will start a new pipeline.
+ - In 'ready/a' branch break code in any java file and commit (Will be used in Use case 2)
+ - Using GitLab in 'src/main/resources/config_en_US.properties' file change 'enable_subtraction=false'.
+   <check> In Jenkins 'ready/b' will start a new pipeline and stop the previous one.
+   <check> It must reach 'Push to master' stage. (~5min).
+   <check> Watch test coverage and mutation testing reports in Commit stage (2 blue links)
+   <check> Click on 'Tests' in the header. One integration test fails (because there is no '-' button).
+   <check> Open stage server and test the app manually (blue link in 'Push to master' stage).
+ - Even though one test fails, we push it to master. Press Proceed in 'Push to master' stage.
+   <check> Changes are pushed to 'master'. 'ready/b' branch is deleted.
+   <check> Artifactory obtains the second artifact ROOT.war v0.0.2
+   <check> Test coverage, mutation testing reports and stage server are not loading anymore
+ - Inside Jenkins wait until the second pipeline from 'master' completes.
+   <check> http://localhost:15900 (prod server) must display the app.
+
+
+Use case 2.
+Pre-conditions:
+ - Completed Use case 1.
+Goal:
+ - Break the code in 'ready/a' to make pipeline fail.
+ - Fix the code back. Jenkins will fail the pipeline because the current commit is not a fast-forward descendant of master anymore.
+ - Pull from master into 'ready/a' to be able to run pipeline for this branch again.
+Steps:
+ - In the Use case 1 we broke 'ready/a' branch
+   <check> The pipeline for 'ready/a' fails on 'Commit stage' while building.
+ - Fix the code back in that file.
+   <check> New pipeline for 'ready/a' fails on 'Descendant of master?' stage because after Use case 1 master branch changed and it's not a parent of 'ready/a' anymore.
+ - Pull changes from 'master' into 'ready/a' and commit
+   <check> 'ready/a' became ancestor of 'master' again and the pipeline works again.
+
+
+Use case 3.
+Pre-conditions:
+ - Completed Use case 2.
+Goal:
+ - Rollback v0.0.1 on production server
+Steps:
+ - In Gitlab open Repository - Tags.
+   <check> It must contain 2 tagged commits (v0.0.1 and v0.0.2)
+ - Remember hash of the v0.0.1 commit. In Jenkins(BlueOcean) open 'Activity' bar, find a line with that hash and click the rounded arrow button.
+   <check> A new 'master' pipeline will start and deploy v0.0.1 version from Artifactory to production server.
+
+
+
+
+
+
+Notes:
+Screen recording of the installation and scenarios: https://drive.google.com/file/d/1NkCZWgm9BUHQJ16CRFxeBIlzzacXL9tW/view?usp=sharing
+Presentation with described architecture: https://docs.google.com/presentation/d/1f1bVA0E8H4EucPLi2YwzHYYQz8FNb8cWthHxNXy0jE0/edit?usp=sharing
